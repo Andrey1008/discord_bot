@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="navbar">
+        <ul>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/settings">Настройки доступа</a></li>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/settings?setting=tickets">Настройки тикетов</a></li>
+            <li><a class="active" href="http://{{domain}}/dashboard/{{guild_id}}/settings?setting=commands">Настройки комманд</a></li>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/send">Отправить оповещение/новость</a></li>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/logs">Логи</a></li>
+            <li class="panel"><a href="http://{{domain}}/dashboard">Панель</a></li>
+        </ul>
+    </div>
+    <div class="form_send">
+        <form method="POST">
+           <div class="form__fieldset">
+                <label for="role" class="form__label">Роль:</label>
+                <select name="role" id="role" class="form__input form__select">
+                    {% for i in range(0, length_role) %}
+                    <option class="option" value="{{ roles['role_id'][i] }}">{{ roles['role_name'][i] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <label for="command" class="form__label">Комманда:</label>
+                <select name="command" id="command" class="form__input form__select">
+                    {% for i in range(0, length_commands) %}
+                    <option class="option" value="{{ bot_commands['command'][i] }}">{{ bot_commands['command_name'][i] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <input
+                    class="form__submit form__input btn_form"
+                    type="submit"
+                    value="Разрешить использование"
+                />
+            </div>
+        </form>
+        <form method="POST">
+           <div class="form__fieldset">
+                <label for="role_remove" class="form__label">Роль:</label>
+                <select name="role_remove" id="role_remove" class="form__input form__select">
+                    {% for i in range(0, length_role) %}
+                    <option class="option" value="{{ roles['role_id'][i] }}">{{ roles['role_name'][i] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <label for="command_remove" class="form__label">Комманда:</label>
+                <select name="command_remove" id="command_remove" class="form__input form__select">
+                    {% for i in range(0, length_commands) %}
+                    <option class="option" value="{{ bot_commands['command'][i] }}">{{ bot_commands['command_name'][i] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <input
+                    class="form__submit form__input btn_form"
+                    type="submit"
+                    value="Забрать доступ"
+                />
+            </div>
+        </form>
+        <div class="perms">
+            {% for i in range(0, len(roles_perms["role_id"])) %}
+                <p>У роли "{{ role_name(roles_perms["role_id"][i], guild_id) }}" есть доступ к следующим коммандам: {{ role_commands(roles_perms["role_id"][i]) }}</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

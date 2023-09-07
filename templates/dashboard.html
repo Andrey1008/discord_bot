@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Панель</title>
+   	  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+  </head>
+  <body style="font-size: initial;">
+    <div class="picker">
+      <div class="header">
+      	<h1 style="padding: 0 0 0 50px">Выберите сервер чтобы начать.</h1>
+        <div class="user_info">
+        {% if avatar_url is not none %}
+        <img width="32" height="32" src="{{avatar_url}}" class="avatar" />
+        {% else %}
+        <img width="32" height="32" src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-square-color-icon.png" class="avatar" />
+        {% endif %}
+        <h2 class="username">{{username}}</h2>
+        </div>
+        
+      </div>
+      <hr />
+      <section class="cards">
+        {% for guild in guilds %}
+        <span class="spacer">
+        <a href="/dashboard/{{guild.id}}">
+            <div class="card">
+            {% if guild.icon_url is not none %}
+            <img width="128" height="128" src="{{guild.icon_url}}" class="{{guild.class_color}}" />
+            {% else %}
+            <img
+              src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-square-color-icon.png"
+              class="{{guild.class_color}}"
+			  width="128" 
+              height="128"
+            />
+            {% endif %}
+            <p class="name">{{ guild.name }}</p> 
+            {% if member_count(guild.id) is not none %}
+            <p>Участников: {{ member_count(guild.id) }}</p>
+            {% else %}
+            <p class="error">Бота нет на этом сервере</p>
+            {% endif %}
+          </div>
+          <br />
+            
+        </a>
+        </span>
+        {% endfor %}
+      </section>
+    </div>
+      
+      
+      
+      <!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(94453427, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/94453427" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+      
+      
+  </body>
+</html>

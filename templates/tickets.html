@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <script src="{{url_for('static', filename='jquery-3.7.0.min.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='ticket_script.js')}}" type="text/javascript"></script>
+</head>
+<body>
+    <div class="navbar">
+        <ul>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/settings">Настройки доступа</a></li>
+            <li><a class="active" href="http://{{domain}}/dashboard/{{guild_id}}/settings?setting=tickets">Настройки тикетов</a></li>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/settings?setting=commands">Настройки комманд</a></li>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/send">Отправить оповещение/новость</a></li>
+            <li><a href="http://{{domain}}/dashboard/{{guild_id}}/logs">Логи</a></li>
+            <li class="panel"><a href="http://{{domain}}/dashboard">Панель</a></li>
+        </ul>
+    </div>
+    <div class="form_send">
+        <form method="POST">
+            <input type="hidden" value="{{ fields_val }}" name="fields" id="fields"/>
+            <div class="form__fieldset">
+                <details>
+                    <summary><span class="details">Настройки формы</span></summary>
+                </details>
+                <div class="content">
+                    <div class="form__fieldset">
+                        <label for="form_title" class="form__label">Название формы: </label>
+                        <input value="{{ modal_sets[1] }}" class="form__input" name="form_title" id="form_title" />
+                    </div>
+                    <div class="form__fieldset">
+                        <label style="display: flex; flex-direction: row; align-items: center" for="name_field" class="form__label">Вопрос для ника <span class="help"></span><div class="info">Использует ответ на вопрос под выбранным номером для установки ника пользователя. Если значение 0, то выключено.</div>: </label>
+                        <select class="form__input form__select" name="name_field" id="name_field">
+                            <option value="0">0</option>
+                            {% for i in range(0, fields_val) %}
+                            {% if modal_sets[5] != '' %}
+                            {% if i+1 == int(modal_sets[5]) %}
+                            <option selected="selected" value="{{ i+1 }}">{{ i+1 }}</option>
+                            {% else %}
+                            <option value="{{ i+1 }}">{{ i+1 }}</option>
+                            {% endif %}
+                            {% else %}
+                            <option value="{{ i+1 }}">{{ i+1 }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form__fieldset">
+                        <label for="ticket_message_title" class="form__label">Заголовок в сообщении для открытия тикета: </label>
+                        <input value="{{ modal_sets[2] }}" class="form__input" name="ticket_message_title" id="ticket_message_title" />
+                    </div>
+                    <div class="form__fieldset">
+                        <label for="ticket_message_desc" class="form__label">Текст в сообщении для открытия тикета: </label>
+                        <textarea style="width: 450px;" class="form__input" name="ticket_message_desc" id="ticket_message_desc">{{ modal_sets[3] }}</textarea>
+                    </div>
+                    <div class="form__fieldset">
+                        <label for="ticket_footer" class="form__label">Нижний колонтитул в сообщении для открытия тикета: </label>
+                        <input value="{{ modal_sets[4] }}" class="form__input" name="ticket_footer" id="ticket_footer" />
+                    </div>
+                </div>
+            </div>
+            {% for i in range(0, fields_val) %}
+            <div class="form__fieldset field{{ i+1 }}">
+                <details>
+                    <summary><span class="details">Вопрос {{ i+1 }}</span></summary>
+                </details>
+                <div class="content">
+                    <div class="form__fieldset">
+                        <label for="field{{ i+1 }}_q" class="form__label">Вопрос:</label>
+                        <input value="{{ questions[i] }}" class="form__input field{{ i+1 }}" id="field{{ i+1 }}_q" name="field{{ i+1 }}_q" />
+                    </div>
+                    <div class="form__fieldset">
+                        <label for="field{{ i+1 }}_ph" class="form__label">Placeholder:</label>
+                        <input value="{{ placeholders[i] }}" class="form__input field{{ i+1 }}" id="field{{ i+1 }}_ph" name="field{{ i+1 }}_ph" />
+                    </div>
+                    <div class="form__fieldset">
+                       <label for="field{{ i+1 }}_t" class="form__label">Тип:</label>
+                        <select name="field{{ i+1 }}_t" id="field{{ i+1 }}_t" class="form__input form__select">
+                            {% if types[i] == 'long' %}
+                            <option class="option" value="short">Короткий</option>
+                            <option selected="selected" class="option" value="long">Длинный</option>
+                            {% else %}
+                            <option selected="selected" class="option" value="short">Короткий</option>
+                            <option class="option" value="long">Длинный</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="form__fieldset">
+                        <label for="field{{ i+1 }}_ml" class="form__label">Максимальная длинна :</label>
+                        {% if lengths[i] != '' and lengths[i] is not none %}
+                        <input value="{{ lengths[i] }}" type="number" class="form__input field{{ i+1 }}" id="field{{ i+1 }}_ml" name="field{{ i+1 }}_ml" />
+                        {% else %}
+                        <input type="number" class="form__input field{{ i+1 }}" id="field{{ i+1 }}_ml" name="field{{ i+1 }}_ml" />
+                        {% endif %}
+                    </div>
+                    <div class="form__fieldset">
+                        <label for="field{{ i+1 }}_r" class="form__label">Обязательно? :</label>
+                        {% if require[i] == 'on' %}
+                        <input checked="checked" type="checkbox" class="form__input field{{ i+1 }}" id="field{{ i+1 }}_r" name="field{{ i+1 }}_r" />
+                        {% else %}
+                        <input type="checkbox" class="form__input field{{ i+1 }}" id="field{{ i+1 }}_r" name="field{{ i+1 }}_r" />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <input class="form__input form__button" type="button" id="add_field" value="+"/>
+            <input class="form__input form__button" id="reset" type="button" value="Очистить"/>
+            <input class="form__input form__submit" type="submit" value="Сохранить" />
+        </form>
+        <form method="POST">
+           <div class="form__fieldset">
+                <label for="role" class="form__label">Роль:</label>
+                <select name="role" id="role" class="form__input form__select">
+                    {% for i in range(1, len(roles['role_id'])) %}
+                    <option class="option" value="{{ roles['role_id'][i] }}">{{ roles['role_name'][i] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <input
+                    class="form__submit form__input btn_form"
+                    type="submit"
+                    value="Дать доступ"
+                />
+            </div>
+        </form>
+        <form method="POST">
+           <div class="form__fieldset">
+                <label for="role_remove" class="form__label">Роль:</label>
+                <select name="role_remove" id="role_remove" class="form__input form__select">
+                    {% for i in range(0, len(roles_dict['role_id'])) %}
+                    <option class="option" value="{{ roles_dict['role_id'][i] }}">{{ role_name(roles_dict['role_id'][i], guild_id) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <input
+                    class="form__submit form__input btn_form"
+                    type="submit"
+                    value="Забрать доступ"
+                />
+            </div>
+        </form>
+        <form method="POST">
+           <div class="form__fieldset">
+                <label for="recruit_role" class="form__label">Роль рекрута:</label>
+                <select name="recruit_role" id="recruit_role" class="form__input form__select">
+                    {% for i in range(1, len(roles['role_id'])) %}
+                    	{% if str(roles['role_id'][i]) == recruit_id %}
+                    		<option selected="selected" class="option" value="{{ roles['role_id'][i] }}">{{ roles['role_name'][i] }}</option>
+                    	{% else %}
+                    		<option class="option" value="{{ roles['role_id'][i] }}">{{ roles['role_name'][i] }}</option>
+                    	{% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <label for="pvt_role" class="form__label">Роль рядового:</label>
+                <select name="pvt_role" id="pvt_role" class="form__input form__select">
+                    {% for i in range(1, len(roles['role_id'])) %}
+                    	{% if str(roles['role_id'][i]) == pvt_id %}
+                    		<option selected="selected" class="option" value="{{ roles['role_id'][i] }}">{{ roles['role_name'][i] }}</option>
+                    	{% else %}
+                    		<option class="option" value="{{ roles['role_id'][i] }}">{{ roles['role_name'][i] }}</option>
+                    	{% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <label for="log_channel" class="form__label">Канал для анкет:</label>
+                <select name="log_channel" id="log_channel" class="form__input form__select">
+                    {% for i in range(0, len(channels['channel_id'])) %}
+                    	{% if str(channels['channel_id'][i]) == log_channel %}
+                    		<option selected="selected" class="option" value="{{ channels['channel_id'][i] }}">{{ channels['channel_name'][i] }}</option>
+                    	{% else %}
+                    		<option class="option" value="{{ channels['channel_id'][i] }}">{{ channels['channel_name'][i] }}</option>
+                    	{% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__fieldset">
+                <label for="message" class="message">Сообщение в тикете:</label>
+                {% if message is not none %}
+                <input value="{{ message }}" name="message" id="message" class="form__input" />
+                {% else %}
+                <input name="message" id="message" class="form__input" />
+                {% endif %}
+            </div>
+            <div class="form__fieldset">
+                <input
+                    class="form__submit form__input btn_form"
+                    type="submit"
+                    value="Сохранить"
+                />
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

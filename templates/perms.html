@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="navbar">
+    <ul>
+        <li><a class="active" href="http://{{domain}}/dashboard/{{guild_id}}/settings">Настройки доступа</a></li>
+        <li><a href="http://{{domain}}/dashboard/{{guild_id}}/settings?setting=tickets">Настройки тикетов</a></li>
+        <li><a href="http://{{domain}}/dashboard/{{guild_id}}/settings?setting=commands">Настройки комманд</a></li>
+        <li><a href="http://{{domain}}/dashboard/{{guild_id}}/send">Отправить оповещение/новость</a></li>
+        <li><a href="http://{{domain}}/dashboard/{{guild_id}}/logs">Логи</a></li>
+        <li class="panel"><a href="http://{{domain}}/dashboard">Панель</a></li>
+    </ul>
+</div>
+<div class="forms">
+<form name="name" id="form_add" method="POST">
+    <div class="add">
+    <div class="form__fieldset">
+        <label for="user_id" class="form__label">ID пользователя:</label>
+        <input name="user_id" id="user_id" class="form__input" />
+    </div>
+    <div class="form__fieldset">
+        <input
+                class="form__submit form__input btn_form"
+                type="submit"
+                value="Дать доступ"
+        />
+
+    </div>
+    </div>
+</form>
+<form name="name1" id="form_remove" method="POST">
+    <div class="remove">
+    <div class="form__fieldset">
+        <label for="user" class="form__label">Пользователь:</label>
+        <select name="user" id="user" class="form__input form__select">
+            {% for i in range(0, length) %}
+            <option class="option" value="{{users['id'][i]}}">{{users['name'][i]}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form__fieldset">
+        <input
+                class="form__submit form__input btn_form"
+                type="submit"
+                value="Забрать доступ"
+        />
+
+    </div>
+    </div>
+</form>
+</div>
+    
+    
+    <!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(94453427, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/94453427" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+    
+    
+</body>
+</html>
