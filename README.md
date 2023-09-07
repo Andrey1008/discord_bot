@@ -1,2 +1,3 @@
-templates - html файлы\n
+templates - html файлы
+
 static - скрипты, стили и сохранённые изображения
